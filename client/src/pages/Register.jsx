@@ -1,20 +1,26 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:5001";
 
-function Login() {
+function Register() {
     const navigate = useNavigate();
-    const location = useLocation();
 
-    const params = new URLSearchParams(location.search);
-    const tagId = params.get("tag");
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: ""
+    });
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,32 +29,21 @@ function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch(`${API_URL}/api/auth/login`, {
+            const response = await fetch(`${API_URL}/api/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    email,
-                    password
-                })
+                body: JSON.stringify(formData)
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || "Login failed");
+                throw new Error(data.message || "Registration failed");
             }
 
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
-
-            if (tagId) {
-                navigate(`/access/${tagId}`);
-            } else {
-                navigate("/dashboard");
-            }
-
+            navigate("/login");
         } catch (error) {
             setError(error.message);
         } finally {
@@ -58,21 +53,27 @@ function Login() {
 
     return (
         <div>
-            <h1>Login</h1>
-
-            {tagId && (
-                <p>
-                    Login to access NFC tag: <strong>{tagId}</strong>
-                </p>
-            )}
+            <h1>Create Account</h1>
 
             <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
                 <div>
                     <label>Email</label>
                     <input
                         type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -81,8 +82,9 @@ function Login() {
                     <label>Password</label>
                     <input
                         type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
                         required
                     />
                 </div>
@@ -90,18 +92,18 @@ function Login() {
                 {error && <p>{error}</p>}
 
                 <button type="submit" disabled={loading}>
-                    {loading ? "Logging in..." : "Login"}
+                    {loading ? "Creating Account..." : "Register"}
                 </button>
             </form>
 
             <p>
-                Don't have an account?{" "}
-                <button onClick={() => navigate("/register")}>
-                    Register
+                Already have an account?{" "}
+                <button onClick={() => navigate("/login")}>
+                    Login
                 </button>
             </p>
         </div>
     );
 }
 
-export default Login;
+export default Register;

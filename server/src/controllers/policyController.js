@@ -28,6 +28,15 @@ const createPolicy = async (req, res) => {
             });
         }
 
+        if (
+    allowedActions?.includes("EDIT") &&
+    !allowedActions.includes("VIEW")
+) {
+    return res.status(400).json({
+        message: "EDIT permission requires VIEW permission"
+    });
+}
+
         const tag = await Tag.findOne({
             tagId,
             owner: req.user.userId
@@ -113,6 +122,16 @@ if (accessScope !== undefined) {
     }
 
     policy.accessScope = accessScope;
+}
+
+    if (
+    allowedActions !== undefined &&
+    allowedActions.includes("EDIT") &&
+    !allowedActions.includes("VIEW")
+) {
+    return res.status(400).json({
+        message: "EDIT permission requires VIEW permission"
+    });
 }
 
         const tag = await Tag.findOne({

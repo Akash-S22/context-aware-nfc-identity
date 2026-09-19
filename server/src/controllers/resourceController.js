@@ -1,6 +1,6 @@
 const Resource = require("../models/Resource");
 const Tag = require("../models/Tag");
-
+const { checkAccess } = require("../services/accessService");
 
 // Create resource
 const createResource = async (req, res) => {
@@ -79,9 +79,7 @@ const getResources = async (req, res) => {
 // Update resource
 const updateResource = async (req, res) => {
     try {
-        const resource = await Resource.findById(
-            req.params.id
-        );
+        const resource = await Resource.findById(req.params.id);
 
         if (!resource) {
             return res.status(404).json({
@@ -89,14 +87,24 @@ const updateResource = async (req, res) => {
             });
         }
 
-        const tag = await Tag.findOne({
-            _id: resource.tag,
-            owner: req.user.userId
-        });
+        const tag = await Tag.findById(resource.tag);
 
         if (!tag) {
+            return res.status(404).json({
+                message: "Tag not found"
+            });
+        }
+
+        const accessResult = await checkAccess({
+            user: req.user,
+            tagId: tag.tagId,
+            action: "EDIT"
+        });
+
+        if (!accessResult.allowed) {
             return res.status(403).json({
-                message: "You do not own this resource"
+                message: "You do not have permission to edit this resource",
+                reason: accessResult.reason
             });
         }
 
@@ -108,32 +116,16 @@ const updateResource = async (req, res) => {
             active
         } = req.body;
 
-        if (name !== undefined) {
-            resource.name = name;
-        }
-
-        if (type !== undefined) {
-            resource.type = type;
-        }
-
-        if (description !== undefined) {
-            resource.description = description;
-        }
-
-        if (content !== undefined) {
-            resource.content = content;
-        }
-
-        if (active !== undefined) {
-            resource.active = active;
-        }
+        if (name !== undefined) resource.name = name;
+        if (type !== undefined) resource.type = type;
+        if (description !== undefined) resource.description = description;
+        if (content !== undefined) resource.content = content;
+        if (active !== undefined) resource.active = active;
 
         await resource.save();
 
-        res.status(200).json({
-            message: "Resource updated successfully",
-            resource
-        });
+        res.status(200).json(resource);
+
     } catch (error) {
         res.status(500).json({
             message: "Failed to update resource",
@@ -141,7 +133,6 @@ const updateResource = async (req, res) => {
         });
     }
 };
-
 
 // Delete resource
 const deleteResource = async (req, res) => {
