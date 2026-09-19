@@ -27,8 +27,20 @@ const evaluateAccess = async (req, res) => {
         res.status(200).json({
             allowed: true,
             reason: result.reason,
-            tag: result.tag,
-            policy: result.policy
+
+            tag: {
+                tagId: result.tag.tagId,
+                type: result.tag.type,
+                status: result.tag.status
+            },
+
+            policy: {
+                name: result.policy.name,
+                allowedRoles: result.policy.allowedRoles,
+                allowedActions: result.policy.allowedActions
+            },
+
+            resources: result.resources
         });
     } catch (error) {
         res.status(500).json({
