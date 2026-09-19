@@ -5,6 +5,7 @@ const authRoutes = require("./routes/authRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const accessRoutes = require("./routes/accessRoutes");
 const policyRoutes = require("./routes/policyRoutes");
+const resourceRoutes = require("./routes/resourceRoutes");
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tags", tagRoutes);
 app.use("/api/access", accessRoutes);
 app.use("/api/policies", policyRoutes);
+app.use("/api/resources", resourceRoutes);
 
 module.exports = app;
