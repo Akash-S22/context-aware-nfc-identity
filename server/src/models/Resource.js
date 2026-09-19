@@ -16,7 +16,7 @@ const resourceSchema = new mongoose.Schema(
 
         type: {
             type: String,
-            enum: ["PROFILE", "DOCUMENT", "SERVICE"],
+            enum: ["PROFILE", "DOCUMENT", "SERVICE", "EMERGENCY"],
             required: true
         },
 

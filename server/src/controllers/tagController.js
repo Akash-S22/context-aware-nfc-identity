@@ -145,11 +145,52 @@ const deleteTag = async (req, res) => {
     }
 };
 
+const updateEmergencyStatus = async (req, res) => {
+    try {
+        const { emergencyEnabled } = req.body;
+
+        if (typeof emergencyEnabled !== "boolean") {
+            return res.status(400).json({
+                message: "emergencyEnabled must be true or false"
+            });
+        }
+
+        const tag = await Tag.findOneAndUpdate(
+            {
+                tagId: req.params.tagId,
+                owner: req.user.userId
+            },
+            {
+                emergencyEnabled
+            },
+            {
+                new: true
+            }
+        );
+
+        if (!tag) {
+            return res.status(404).json({
+                message: "Tag not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "Emergency setting updated",
+            tag
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to update emergency setting",
+            error: error.message
+        });
+    }
+};
 
 module.exports = {
     createTag,
     getTags,
     getTagById,
     updateTagStatus,
+    updateEmergencyStatus,
     deleteTag
 };

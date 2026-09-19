@@ -5,6 +5,7 @@ const {
     getTags,
     getTagById,
     updateTagStatus,
+    updateEmergencyStatus,
     deleteTag
 } = require("../controllers/tagController");
 
@@ -21,6 +22,11 @@ router.get("/", getTags);
 router.get("/:tagId", getTagById);
 
 router.patch("/:tagId/status", updateTagStatus);
+
+router.patch(
+    "/:tagId/emergency",
+    updateEmergencyStatus
+);
 
 router.delete("/:tagId", deleteTag);
 

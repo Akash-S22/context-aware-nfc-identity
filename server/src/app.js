@@ -6,7 +6,7 @@ const tagRoutes = require("./routes/tagRoutes");
 const accessRoutes = require("./routes/accessRoutes");
 const policyRoutes = require("./routes/policyRoutes");
 const resourceRoutes = require("./routes/resourceRoutes");
-
+const emergencyRoutes = require("./routes/emergencyRoutes");
 const app = express();
 
 app.use(cors());
@@ -23,5 +23,6 @@ app.use("/api/tags", tagRoutes);
 app.use("/api/access", accessRoutes);
 app.use("/api/policies", policyRoutes);
 app.use("/api/resources", resourceRoutes);
+app.use("/api/emergency", emergencyRoutes);
 
 module.exports = app;
