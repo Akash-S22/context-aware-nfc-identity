@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import "./Auth.css";
 
-const API_URL = "http://localhost:5001";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Login() {
     const navigate = useNavigate();
@@ -56,52 +57,95 @@ function Login() {
         }
     };
 
-    return (
-        <div>
-            <h1>Login</h1>
+   return (
+    <div className="auth-page">
+        <div className="auth-card">
+            <div className="auth-brand">
+                NFC Identity
+            </div>
+
+            <h1 className="auth-title">
+                Welcome back
+            </h1>
+
+            <p className="auth-subtitle">
+                Sign in to manage your NFC identities.
+            </p>
 
             {tagId && (
-                <p>
-                    Login to access NFC tag: <strong>{tagId}</strong>
-                </p>
+                <div className="auth-tag-notice">
+                    You're accessing NFC tag{" "}
+                    <strong>{tagId}</strong>.
+                    <br />
+                    Sign in to continue.
+                </div>
             )}
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Email</label>
+            <form
+                className="auth-form"
+                onSubmit={handleSubmit}
+            >
+                <div className="auth-field">
+                    <label htmlFor="login-email">
+                        Email
+                    </label>
+
                     <input
+                        id="login-email"
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) =>
+                            setEmail(e.target.value)
+                        }
                         required
                     />
                 </div>
 
-                <div>
-                    <label>Password</label>
+                <div className="auth-field">
+                    <label htmlFor="login-password">
+                        Password
+                    </label>
+
                     <input
+                        id="login-password"
                         type="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) =>
+                            setPassword(e.target.value)
+                        }
                         required
                     />
                 </div>
 
-                {error && <p>{error}</p>}
+                {error && (
+                    <p className="auth-error">
+                        {error}
+                    </p>
+                )}
 
-                <button type="submit" disabled={loading}>
-                    {loading ? "Logging in..." : "Login"}
+                <button
+                    className="auth-submit"
+                    type="submit"
+                    disabled={loading}
+                >
+                    {loading
+                        ? "Logging in..."
+                        : "Login"}
                 </button>
             </form>
 
-            <p>
+            <p className="auth-footer">
                 Don't have an account?{" "}
-                <button onClick={() => navigate("/register")}>
+                <button
+                    className="auth-link"
+                    onClick={() => navigate("/register")}
+                >
                     Register
                 </button>
             </p>
         </div>
-    );
+    </div>
+);
 }
 
 export default Login;

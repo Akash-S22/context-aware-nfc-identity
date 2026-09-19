@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import "./TagDetails.css";
 
-const API_URL = "http://localhost:5001";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function TagDetails() {
     const { tagId } = useParams();
@@ -139,61 +140,170 @@ function TagDetails() {
         }
     };
 
-    if (loading) {
-        return <p>Loading tag...</p>;
-    }
-
-    if (error && !tag) {
-        return <p>{error}</p>;
-    }
-
+   if (loading) {
     return (
-        <div>
-            <button onClick={() => navigate("/dashboard")}>
-                Back to Dashboard
-            </button>
-
-            <h1>{tag.tagId}</h1>
-
-            <p>Type: {tag.type}</p>
-            <p>Status: {tag.status}</p>
-
-            <p>
-                Emergency:{" "}
-                {tag.emergencyEnabled ? "Enabled" : "Disabled"}
-            </p>
-
-            {error && <p>{error}</p>}
-
-            <hr />
-
-            <h2>Tag Controls</h2>
-
-            <button onClick={updateStatus}>
-                {tag.status === "ACTIVE"
-                    ? "Deactivate Tag"
-                    : "Activate Tag"}
-            </button>
-
-            <button onClick={updateEmergency}>
-                {tag.emergencyEnabled
-                    ? "Disable Emergency Access"
-                    : "Enable Emergency Access"}
-            </button>
-
-            <button onClick={() => navigate(`/resources/${tagId}`)}>
-                Manage Resources
-            </button>
-
-            <button onClick={() => navigate(`/policies/${tagId}`)}>
-                Manage Policies
-            </button>
-
-            <button onClick={deleteTag}>
-                Delete Tag
-            </button>
+        <div className="tag-loading">
+            Loading tag...
         </div>
     );
+}
+
+if (error && !tag) {
+    return (
+        <div className="tag-loading">
+            {error}
+        </div>
+    );
+}
+
+return (
+    <div className="tag-page">
+        <div className="tag-container">
+
+            <div className="tag-header">
+                <div>
+                    <button
+                        className="back-button"
+                        onClick={() => navigate("/dashboard")}
+                    >
+                        ← Back to Dashboard
+                    </button>
+
+                    <h1>{tag.tagId}</h1>
+                </div>
+            </div>
+
+            {error && (
+                <div className="tag-error">
+                    {error}
+                </div>
+            )}
+
+            <div className="tag-card">
+                <h2>Tag Information</h2>
+
+                <div className="tag-info">
+
+                    <div className="info-item">
+                        <span className="info-label">
+                            Tag ID
+                        </span>
+                        <span className="info-value">
+                            {tag.tagId}
+                        </span>
+                    </div>
+
+                    <div className="info-item">
+                        <span className="info-label">
+                            Type
+                        </span>
+                        <span className="info-value">
+                            {tag.type}
+                        </span>
+                    </div>
+
+                    <div className="info-item">
+                        <span className="info-label">
+                            Status
+                        </span>
+                        <span
+                            className={`info-value ${
+                                tag.status === "ACTIVE"
+                                    ? "status-active"
+                                    : "status-inactive"
+                            }`}
+                        >
+                            {tag.status}
+                        </span>
+                    </div>
+
+                    <div className="info-item">
+                        <span className="info-label">
+                            Emergency Access
+                        </span>
+
+                        <span
+                            className={`info-value ${
+                                tag.emergencyEnabled
+                                    ? "emergency-enabled"
+                                    : "emergency-disabled"
+                            }`}
+                        >
+                            {tag.emergencyEnabled
+                                ? "Enabled"
+                                : "Disabled"}
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div className="tag-card">
+                <h2>Tag Controls</h2>
+
+                <div className="control-list">
+
+                    <button
+                        className="tag-button"
+                        onClick={updateStatus}
+                    >
+                        {tag.status === "ACTIVE"
+                            ? "Deactivate Tag"
+                            : "Activate Tag"}
+                    </button>
+
+                    <button
+                        className="tag-button secondary"
+                        onClick={updateEmergency}
+                    >
+                        {tag.emergencyEnabled
+                            ? "Disable Emergency Access"
+                            : "Enable Emergency Access"}
+                    </button>
+
+                </div>
+            </div>
+
+            <div className="tag-card">
+                <h2>Manage Tag Data</h2>
+
+                <div className="control-list">
+
+                    <button
+                        className="tag-button"
+                        onClick={() =>
+                            navigate(`/resources/${tagId}`)
+                        }
+                    >
+                        Manage Resources
+                    </button>
+
+                    <button
+                        className="tag-button"
+                        onClick={() =>
+                            navigate(`/policies/${tagId}`)
+                        }
+                    >
+                        Manage Policies
+                    </button>
+
+                </div>
+            </div>
+
+            <div className="tag-card">
+                <h2>Danger Zone</h2>
+
+                <button
+                    className="tag-button danger"
+                    onClick={deleteTag}
+                >
+                    Delete Tag
+                </button>
+            </div>
+
+        </div>
+    </div>
+);
 }
 
 export default TagDetails;

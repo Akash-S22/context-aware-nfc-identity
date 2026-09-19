@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Auth.css";
 
-const API_URL = "http://localhost:5001";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Register() {
     const navigate = useNavigate();
@@ -51,14 +52,32 @@ function Register() {
         }
     };
 
-    return (
-        <div>
-            <h1>Create Account</h1>
+   return (
+    <div className="auth-page">
+        <div className="auth-card">
+            <div className="auth-brand">
+                NFC Identity
+            </div>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Name</label>
+            <h1 className="auth-title">
+                Create account
+            </h1>
+
+            <p className="auth-subtitle">
+                Create your account to manage NFC identities.
+            </p>
+
+            <form
+                className="auth-form"
+                onSubmit={handleSubmit}
+            >
+                <div className="auth-field">
+                    <label htmlFor="register-name">
+                        Name
+                    </label>
+
                     <input
+                        id="register-name"
                         type="text"
                         name="name"
                         value={formData.name}
@@ -67,9 +86,13 @@ function Register() {
                     />
                 </div>
 
-                <div>
-                    <label>Email</label>
+                <div className="auth-field">
+                    <label htmlFor="register-email">
+                        Email
+                    </label>
+
                     <input
+                        id="register-email"
                         type="email"
                         name="email"
                         value={formData.email}
@@ -78,9 +101,13 @@ function Register() {
                     />
                 </div>
 
-                <div>
-                    <label>Password</label>
+                <div className="auth-field">
+                    <label htmlFor="register-password">
+                        Password
+                    </label>
+
                     <input
+                        id="register-password"
                         type="password"
                         name="password"
                         value={formData.password}
@@ -89,21 +116,35 @@ function Register() {
                     />
                 </div>
 
-                {error && <p>{error}</p>}
+                {error && (
+                    <p className="auth-error">
+                        {error}
+                    </p>
+                )}
 
-                <button type="submit" disabled={loading}>
-                    {loading ? "Creating Account..." : "Register"}
+                <button
+                    className="auth-submit"
+                    type="submit"
+                    disabled={loading}
+                >
+                    {loading
+                        ? "Creating Account..."
+                        : "Register"}
                 </button>
             </form>
 
-            <p>
+            <p className="auth-footer">
                 Already have an account?{" "}
-                <button onClick={() => navigate("/login")}>
+                <button
+                    className="auth-link"
+                    onClick={() => navigate("/login")}
+                >
                     Login
                 </button>
             </p>
         </div>
-    );
+    </div>
+);
 }
 
 export default Register;

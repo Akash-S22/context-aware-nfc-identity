@@ -1,0 +1,201 @@
+.access-page {
+    min-height: 100vh;
+    background: #f5f7fa;
+    padding: 32px 20px;
+    box-sizing: border-box;
+}
+
+.access-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Header */
+
+.access-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.access-badge {
+    display: inline-block;
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+    border-radius: 20px;
+    padding: 5px 11px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 14px;
+}
+
+.access-header h1 {
+    margin: 0 0 10px;
+    color: #1f2937;
+    font-size: 28px;
+}
+
+.access-header p {
+    max-width: 550px;
+    margin: 0 auto 14px;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.access-tag {
+    display: inline-block;
+    color: #4b5563;
+    font-size: 13px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 7px;
+    padding: 8px 12px;
+}
+
+/* Resources */
+
+.access-resource-list {
+    display: grid;
+    gap: 16px;
+}
+
+.access-resource-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 22px;
+}
+
+.access-resource-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.access-resource-card h2 {
+    margin: 0 0 6px;
+    color: #1f2937;
+    font-size: 19px;
+}
+
+.access-resource-type {
+    display: inline-block;
+    color: #6b7280;
+    font-size: 12px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    padding: 4px 8px;
+}
+
+.access-description {
+    color: #4b5563;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 12px 0 16px;
+}
+
+.access-content {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 16px;
+    color: #374151;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* Empty state */
+
+.access-empty {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 36px 24px;
+    text-align: center;
+}
+
+.access-empty h2 {
+    margin: 0 0 8px;
+    color: #1f2937;
+    font-size: 19px;
+}
+
+.access-empty p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Error */
+
+.access-error-card {
+    max-width: 440px;
+    margin: 80px auto;
+    background: white;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 32px 24px;
+    text-align: center;
+}
+
+.access-error-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.access-error-card h1 {
+    margin: 0 0 10px;
+    color: #1f2937;
+    font-size: 24px;
+}
+
+.access-error-card p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Loading */
+
+.access-loading {
+    min-height: 100vh;
+    background: #f5f7fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.access-loading-card {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+    .access-page {
+        padding: 24px 16px;
+    }
+
+    .access-header h1 {
+        font-size: 24px;
+    }
+
+    .access-resource-card {
+        padding: 18px;
+    }
+}

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import "./Policies.css";
 
-const API_URL = "http://localhost:5001";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function PoliciesPage() {
     const { tagId } = useParams();
@@ -262,42 +263,65 @@ function PoliciesPage() {
     };
 
     if (loading) {
-        return <p>Loading policies...</p>;
-    }
-
     return (
-        <div>
-            <button onClick={() => navigate(`/tags/${tagId}`)}>
-                Back to Tag
-            </button>
+        <div className="policies-loading">
+            Loading policies...
+        </div>
+    );
+}
 
-            <h1>Policies</h1>
+return (
+    <div className="policies-page">
+        <div className="policies-container">
 
-            <p>Tag: {tagId}</p>
+            <div className="policies-header">
+                <div>
+                    <button
+                        className="back-button"
+                        onClick={() => navigate(`/tags/${tagId}`)}
+                    >
+                        ← Back to Tag
+                    </button>
 
-            {error && <p>{error}</p>}
+                    <h1>Access Policies</h1>
 
-            <button
-                onClick={() => {
-                    if (showForm) {
-                        resetForm();
-                    } else {
-                        setShowForm(true);
-                    }
-                }}
-            >
-                {showForm ? "Cancel" : "Add Policy"}
-            </button>
+                    <p className="policies-tag">
+                        Tag: {tagId}
+                    </p>
+                </div>
+
+                <button
+                    className="add-policy-button"
+                    onClick={() => {
+                        if (showForm) {
+                            resetForm();
+                        } else {
+                            setShowForm(true);
+                        }
+                    }}
+                >
+                    {showForm ? "Cancel" : "+ Add Policy"}
+                </button>
+            </div>
+
+            {error && (
+                <div className="policy-error">
+                    {error}
+                </div>
+            )}
 
             {showForm && (
-                <form onSubmit={handleSubmit}>
+                <form
+                    className="policy-form"
+                    onSubmit={handleSubmit}
+                >
                     <h2>
                         {editingId
                             ? "Edit Policy"
                             : "Create Policy"}
                     </h2>
 
-                    <div>
+                    <div className="form-group">
                         <label>Policy Name</label>
 
                         <input
@@ -305,11 +329,12 @@ function PoliciesPage() {
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
+                            placeholder="Example: Owner Access"
                             required
                         />
                     </div>
 
-                    <div>
+                    <div className="form-group">
                         <label>Access Scope</label>
 
                         <select
@@ -327,141 +352,190 @@ function PoliciesPage() {
                     </div>
 
                     {formData.accessScope === "ROLE" && (
-                        <div>
-                            <p>Allowed Roles</p>
+                        <div className="form-group">
+                            <span className="form-label">
+                                Allowed Roles
+                            </span>
 
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={formData.allowedRoles.includes(
-                                        "USER"
-                                    )}
-                                    onChange={() =>
-                                        handleRoleChange("USER")
-                                    }
-                                />
-                                USER
-                            </label>
+                            <div className="checkbox-group">
 
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={formData.allowedRoles.includes(
-                                        "ADMIN"
-                                    )}
-                                    onChange={() =>
-                                        handleRoleChange("ADMIN")
-                                    }
-                                />
-                                ADMIN
-                            </label>
+                                <label className="checkbox-option">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.allowedRoles.includes(
+                                            "USER"
+                                        )}
+                                        onChange={() =>
+                                            handleRoleChange("USER")
+                                        }
+                                    />
+                                    USER
+                                </label>
+
+                                <label className="checkbox-option">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.allowedRoles.includes(
+                                            "ADMIN"
+                                        )}
+                                        onChange={() =>
+                                            handleRoleChange("ADMIN")
+                                        }
+                                    />
+                                    ADMIN
+                                </label>
+
+                            </div>
                         </div>
                     )}
 
-                    <div>
-                        <p>Allowed Actions</p>
+                    <div className="form-group">
+                        <span className="form-label">
+                            Allowed Actions
+                        </span>
 
-                        {["VIEW", "DOWNLOAD", "EDIT"].map(
-                            (action) => (
-                                <label key={action}>
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.allowedActions.includes(
-                                            action
-                                        )}
-                                        onChange={() =>
-                                            handleActionChange(action)
-                                        }
-                                    />
-                                    {action}
-                                </label>
-                            )
-                        )}
+                        <div className="checkbox-group">
+
+                            {["VIEW", "DOWNLOAD", "EDIT"].map(
+                                (action) => (
+                                    <label
+                                        className="checkbox-option"
+                                        key={action}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.allowedActions.includes(
+                                                action
+                                            )}
+                                            onChange={() =>
+                                                handleActionChange(
+                                                    action
+                                                )
+                                            }
+                                        />
+
+                                        {action}
+                                    </label>
+                                )
+                            )}
+
+                        </div>
                     </div>
 
-                    <button type="submit">
-                        {editingId
-                            ? "Update Policy"
-                            : "Create Policy"}
-                    </button>
-
-                    {editingId && (
+                    <div className="form-actions">
                         <button
-                            type="button"
-                            onClick={resetForm}
+                            type="submit"
+                            className="primary-button"
                         >
-                            Cancel Edit
+                            {editingId
+                                ? "Update Policy"
+                                : "Create Policy"}
                         </button>
-                    )}
+
+                        {editingId && (
+                            <button
+                                type="button"
+                                className="secondary-button"
+                                onClick={resetForm}
+                            >
+                                Cancel Edit
+                            </button>
+                        )}
+                    </div>
                 </form>
             )}
 
-            <hr />
+            <div className="policy-section">
+                <h2>Policies for {tagId}</h2>
 
-            <h2>Policies for {tagId}</h2>
+                {policies.length === 0 ? (
+                    <p className="empty-policies">
+                        No policies found for this tag.
+                    </p>
+                ) : (
+                    <div className="policy-list">
 
-            {policies.length === 0 ? (
-                <p>No policies found.</p>
-            ) : (
-                policies.map((policy) => (
-                    <div key={policy._id}>
-                        <h3>{policy.name}</h3>
+                        {policies.map((policy) => (
+                            <div
+                                className="policy-item"
+                                key={policy._id}
+                            >
+                                <h3>{policy.name}</h3>
 
-                        <p>
-                            Scope: {policy.accessScope}
-                        </p>
+                                <p className="policy-detail">
+                                    <strong>Scope:</strong>{" "}
+                                    {policy.accessScope}
+                                </p>
 
-                        <p>
-                            Roles:{" "}
-                            {policy.allowedRoles.length > 0
-                                ? policy.allowedRoles.join(", ")
-                                : "None"}
-                        </p>
+                                <p className="policy-detail">
+                                    <strong>Roles:</strong>{" "}
+                                    {policy.allowedRoles.length > 0
+                                        ? policy.allowedRoles.join(", ")
+                                        : "None"}
+                                </p>
 
-                        <p>
-                            Actions:{" "}
-                            {policy.allowedActions.join(", ")}
-                        </p>
+                                <p className="policy-detail">
+                                    <strong>Actions:</strong>{" "}
+                                    {policy.allowedActions.join(", ")}
+                                </p>
 
-                        <p>
-                            Status:{" "}
-                            {policy.enabled
-                                ? "Enabled"
-                                : "Disabled"}
-                        </p>
+                                <p className="policy-detail">
+                                    <strong>Status:</strong>{" "}
+                                    <span
+                                        className={
+                                            policy.enabled
+                                                ? "policy-status-enabled"
+                                                : "policy-status-disabled"
+                                        }
+                                    >
+                                        {policy.enabled
+                                            ? "Enabled"
+                                            : "Disabled"}
+                                    </span>
+                                </p>
 
-                        <button
-                            onClick={() =>
-                                startEditing(policy)
-                            }
-                        >
-                            Edit
-                        </button>
+                                <div className="policy-actions">
 
-                        <button
-                            onClick={() =>
-                                togglePolicyStatus(policy)
-                            }
-                        >
-                            {policy.enabled
-                                ? "Disable"
-                                : "Enable"}
-                        </button>
+                                    <button
+                                        className="primary-button"
+                                        onClick={() =>
+                                            startEditing(policy)
+                                        }
+                                    >
+                                        Edit
+                                    </button>
 
-                        <button
-                            onClick={() =>
-                                deletePolicy(policy._id)
-                            }
-                        >
-                            Delete
-                        </button>
+                                    <button
+                                        className="secondary-button"
+                                        onClick={() =>
+                                            togglePolicyStatus(policy)
+                                        }
+                                    >
+                                        {policy.enabled
+                                            ? "Disable"
+                                            : "Enable"}
+                                    </button>
 
-                        <hr />
+                                    <button
+                                        className="danger-button"
+                                        onClick={() =>
+                                            deletePolicy(policy._id)
+                                        }
+                                    >
+                                        Delete
+                                    </button>
+
+                                </div>
+                            </div>
+                        ))}
+
                     </div>
-                ))
-            )}
+                )}
+            </div>
+
         </div>
-    );
+    </div>
+);
 }
 
 export default PoliciesPage;

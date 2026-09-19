@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Dashboard.css";
 
-const API_URL = "http://localhost:5001";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -106,102 +107,196 @@ function Dashboard() {
     }
 
     return (
-        <div>
-            <h1>Dashboard</h1>
+    <div className="dashboard">
+        <header className="dashboard-header">
+            <div className="dashboard-brand">
+                NFC Identity
+            </div>
 
-            {user && (
-                <div>
-                    <p>Welcome, {user.name}</p>
-                    <p>{user.email}</p>
-                </div>
-            )}
+            <div className="dashboard-user">
+                {user && (
+                    <div className="dashboard-user-info">
+                        <p className="dashboard-user-name">
+                            {user.name}
+                        </p>
+                        <p className="dashboard-user-email">
+                            {user.email}
+                        </p>
+                    </div>
+                )}
 
-            <button onClick={handleLogout}>
-                Logout
-            </button>
-
-            <hr />
-
-            <h2>Create NFC Tag</h2>
-
-            <form onSubmit={handleCreateTag}>
-                <div>
-                    <label>Tag ID</label>
-                    <br />
-                    <input
-                        type="text"
-                        value={tagId}
-                        onChange={(e) => setTagId(e.target.value)}
-                        placeholder="Example: NFC003"
-                        required
-                    />
-                </div>
-
-                <br />
-
-                <div>
-                    <label>Type</label>
-                    <br />
-
-                    <select
-                        value={type}
-                        onChange={(e) => setType(e.target.value)}
-                    >
-                        <option value="PERSON">Person</option>
-                        <option value="VEHICLE">Vehicle</option>
-                        <option value="ASSET">Asset</option>
-                        <option value="DOCUMENT">Document</option>
-                    </select>
-                </div>
-
-                <br />
-
-                <button type="submit" disabled={creating}>
-                    {creating ? "Creating..." : "Create Tag"}
+                <button
+                    className="logout-button"
+                    onClick={handleLogout}
+                >
+                    Logout
                 </button>
-            </form>
+            </div>
+        </header>
 
-            {createError && <p>{createError}</p>}
+        <main className="dashboard-content">
+            <h1 className="dashboard-title">
+                Welcome back{user ? `, ${user.name}` : ""}
+            </h1>
 
-            <hr />
+            <p className="dashboard-subtitle">
+                Manage your NFC identities and access settings.
+            </p>
 
-            <h2>My NFC Tags</h2>
+            <section className="create-section">
+                <h2 className="section-title">
+                    Create NFC Tag
+                </h2>
 
-            {error && <p>{error}</p>}
+                <form
+                    className="create-form"
+                    onSubmit={handleCreateTag}
+                >
+                    <div className="form-group">
+                        <label htmlFor="tagId">
+                            Tag ID
+                        </label>
 
-            {tags.length === 0 ? (
-                <p>You don't have any NFC tags yet.</p>
-            ) : (
-                <div>
-                    {tags.map((tag) => (
-                        <div key={tag._id}>
-                            <h3>{tag.tagId}</h3>
+                        <input
+                            id="tagId"
+                            type="text"
+                            value={tagId}
+                            onChange={(e) =>
+                                setTagId(e.target.value)
+                            }
+                            placeholder="Example: NFC003"
+                            required
+                        />
+                    </div>
 
-                            <p>Type: {tag.type}</p>
-                            <p>Status: {tag.status}</p>
+                    <div className="form-group">
+                        <label htmlFor="type">
+                            Type
+                        </label>
 
-                            <p>
-                                Emergency:{" "}
-                                {tag.emergencyEnabled
-                                    ? "Enabled"
-                                    : "Disabled"}
-                            </p>
+                        <select
+                            id="type"
+                            value={type}
+                            onChange={(e) =>
+                                setType(e.target.value)
+                            }
+                        >
+                            <option value="PERSON">
+                                Person
+                            </option>
+                            <option value="VEHICLE">
+                                Vehicle
+                            </option>
+                            <option value="ASSET">
+                                Asset
+                            </option>
+                            <option value="DOCUMENT">
+                                Document
+                            </option>
+                        </select>
+                    </div>
 
-                            <button
-                                onClick={() =>
-                                    navigate(`/tags/${tag.tagId}`)
-                                }
-                            >
-                                Manage Tag
-                            </button>
+                    <button
+                        className="primary-button"
+                        type="submit"
+                        disabled={creating}
+                    >
+                        {creating
+                            ? "Creating..."
+                            : "Create Tag"}
+                    </button>
+                </form>
 
-                            <hr />
-                        </div>
-                    ))}
+                {createError && (
+                    <p className="error-message">
+                        {createError}
+                    </p>
+                )}
+            </section>
+
+            <section>
+                <div className="tags-header">
+                    <h2 className="section-title">
+                        My NFC Tags
+                    </h2>
                 </div>
-            )}
-        </div>
-    );
+
+                {error && (
+                    <p className="error-message">
+                        {error}
+                    </p>
+                )}
+
+                {tags.length === 0 ? (
+                    <div className="empty-state">
+                        <p>
+                            You don't have any NFC tags yet.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="tags-grid">
+                        {tags.map((tag) => (
+                            <div
+                                className="tag-card"
+                                key={tag._id}
+                            >
+                                <div className="tag-card-header">
+                                    <div>
+                                        <h3 className="tag-id">
+                                            {tag.tagId}
+                                        </h3>
+
+                                        <p className="tag-type">
+                                            {tag.type}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="tag-info">
+                                    <div className="tag-info-row">
+                                        <span className="info-label">
+                                            Status
+                                        </span>
+
+                                        <span className="info-value status">
+                                            {tag.status === "ACTIVE" && (
+                                                <span className="status-dot" />
+                                            )}
+                                            {tag.status}
+                                        </span>
+                                    </div>
+
+                                    <div className="tag-info-row">
+                                        <span className="info-label">
+                                            Emergency
+                                        </span>
+
+                                        <span className="info-value">
+                                            {tag.emergencyEnabled
+                                                ? "Enabled"
+                                                : "Disabled"}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    className="manage-button"
+                                    onClick={() =>
+                                        navigate(
+                                            `/tags/${tag.tagId}`
+                                        )
+                                    }
+                                >
+                                    Manage Tag
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </section>
+        </main>
+    </div>
+);
 }
 
 export default Dashboard;

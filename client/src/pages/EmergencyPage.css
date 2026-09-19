@@ -1,0 +1,145 @@
+.emergency-page {
+    min-height: 100vh;
+    background: #fffafa;
+    padding: 32px 20px;
+    box-sizing: border-box;
+}
+
+.emergency-container {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.emergency-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.emergency-icon {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.emergency-header h1 {
+    margin: 0 0 10px;
+    color: #1f2937;
+    font-size: 28px;
+}
+
+.emergency-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.emergency-notice {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.emergency-notice strong {
+    color: #991b1b;
+    font-size: 14px;
+}
+
+.emergency-notice span {
+    color: #7f1d1d;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.emergency-resources {
+    display: grid;
+    gap: 16px;
+}
+
+.emergency-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 22px;
+}
+
+.emergency-card h2 {
+    margin: 0 0 10px;
+    color: #1f2937;
+    font-size: 19px;
+}
+
+.emergency-description {
+    margin: 0 0 16px;
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.emergency-content {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 16px;
+    color: #374151;
+    font-size: 15px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.emergency-card.unavailable {
+    max-width: 500px;
+    margin: 80px auto;
+    text-align: center;
+}
+
+.emergency-card.unavailable .emergency-icon {
+    margin-bottom: 18px;
+}
+
+.emergency-card.unavailable h1 {
+    color: #1f2937;
+    font-size: 24px;
+}
+
+.emergency-card.unavailable p {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.emergency-loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fffafa;
+    color: #6b7280;
+}
+
+@media (max-width: 600px) {
+    .emergency-page {
+        padding: 24px 16px;
+    }
+
+    .emergency-header h1 {
+        font-size: 24px;
+    }
+
+    .emergency-card {
+        padding: 18px;
+    }
+}

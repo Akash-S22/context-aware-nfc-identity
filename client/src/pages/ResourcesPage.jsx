@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import "./Resources.css";
 
-const API_URL = "http://localhost:5001";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function ResourcesPage() {
     const { tagId } = useParams();
@@ -199,43 +200,66 @@ function ResourcesPage() {
         }
     };
 
-    if (loading) {
-        return <p>Loading resources...</p>;
-    }
-
+   if (loading) {
     return (
-        <div>
-            <button onClick={() => navigate(`/tags/${tagId}`)}>
-                Back to Tag
-            </button>
+        <div className="resources-loading">
+            Loading resources...
+        </div>
+    );
+}
 
-            <h1>Resources</h1>
+return (
+    <div className="resources-page">
+        <div className="resources-container">
 
-            <p>Tag: {tagId}</p>
+            <div className="resources-header">
+                <div>
+                    <button
+                        className="back-button"
+                        onClick={() => navigate(`/tags/${tagId}`)}
+                    >
+                        ← Back to Tag
+                    </button>
 
-            {error && <p>{error}</p>}
+                    <h1>Resources</h1>
 
-            <button
-                onClick={() => {
-                    if (showForm) {
-                        resetForm();
-                    } else {
-                        setShowForm(true);
-                    }
-                }}
-            >
-                {showForm ? "Cancel" : "Add Resource"}
-            </button>
+                    <p className="resources-tag">
+                        Tag: {tagId}
+                    </p>
+                </div>
+
+                <button
+                    className="add-resource-button"
+                    onClick={() => {
+                        if (showForm) {
+                            resetForm();
+                        } else {
+                            setShowForm(true);
+                        }
+                    }}
+                >
+                    {showForm ? "Cancel" : "+ Add Resource"}
+                </button>
+            </div>
+
+            {error && (
+                <div className="resource-error">
+                    {error}
+                </div>
+            )}
 
             {showForm && (
-                <form onSubmit={handleSubmit}>
+                <form
+                    className="resource-form"
+                    onSubmit={handleSubmit}
+                >
                     <h2>
                         {editingId
                             ? "Edit Resource"
                             : "Add Resource"}
                     </h2>
 
-                    <div>
+                    <div className="form-group">
                         <label>Name</label>
 
                         <input
@@ -243,11 +267,12 @@ function ResourcesPage() {
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
+                            placeholder="Example: Vehicle Registration"
                             required
                         />
                     </div>
 
-                    <div>
+                    <div className="form-group">
                         <label>Type</label>
 
                         <select
@@ -273,100 +298,145 @@ function ResourcesPage() {
                         </select>
                     </div>
 
-                    <div>
+                    <div className="form-group">
                         <label>Description</label>
 
                         <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
+                            placeholder="Briefly describe this resource"
                         />
                     </div>
 
-                    <div>
+                    <div className="form-group">
                         <label>Content</label>
 
                         <textarea
                             name="content"
                             value={formData.content}
                             onChange={handleChange}
+                            placeholder="Enter the information associated with this resource"
                             required
                         />
                     </div>
 
-                    <button type="submit">
-                        {editingId
-                            ? "Update Resource"
-                            : "Create Resource"}
-                    </button>
-
-                    {editingId && (
+                    <div className="form-actions">
                         <button
-                            type="button"
-                            onClick={resetForm}
+                            type="submit"
+                            className="primary-button"
                         >
-                            Cancel Edit
+                            {editingId
+                                ? "Update Resource"
+                                : "Create Resource"}
                         </button>
-                    )}
+
+                        {editingId && (
+                            <button
+                                type="button"
+                                className="secondary-button"
+                                onClick={resetForm}
+                            >
+                                Cancel Edit
+                            </button>
+                        )}
+                    </div>
                 </form>
             )}
 
-            <hr />
+            <div className="resource-card">
+                <h2>Resources for {tagId}</h2>
 
-            <h2>Resources for {tagId}</h2>
+                {resources.length === 0 ? (
+                    <p className="empty-resources">
+                        No resources found for this tag.
+                    </p>
+                ) : (
+                    <div className="resource-list">
 
-            {resources.length === 0 ? (
-                <p>No resources found.</p>
-            ) : (
-                resources.map((resource) => (
-                    <div key={resource._id}>
-                        <h3>{resource.name}</h3>
+                        {resources.map((resource) => (
+                            <div
+                                className="resource-item"
+                                key={resource._id}
+                            >
+                                <div className="resource-item-header">
+                                    <div>
+                                        <h3>{resource.name}</h3>
 
-                        <p>Type: {resource.type}</p>
+                                        <p className="resource-type">
+                                            {resource.type}
+                                        </p>
+                                    </div>
+                                </div>
 
-                        <p>{resource.description}</p>
+                                {resource.description && (
+                                    <p className="resource-description">
+                                        {resource.description}
+                                    </p>
+                                )}
 
-                        <p>{resource.content}</p>
+                                <div className="resource-content">
+                                    {resource.content}
+                                </div>
 
-                        <p>
-                            Status:{" "}
-                            {resource.active
-                                ? "Active"
-                                : "Inactive"}
-                        </p>
+                                <p
+                                    className={`resource-status ${
+                                        resource.active
+                                            ? "status-active"
+                                            : "status-inactive"
+                                    }`}
+                                >
+                                    {resource.active
+                                        ? "Active"
+                                        : "Inactive"}
+                                </p>
 
-                        <button
-                            onClick={() =>
-                                startEditing(resource)
-                            }
-                        >
-                            Edit
-                        </button>
+                                <div className="resource-actions">
 
-                        <button
-                            onClick={() =>
-                                toggleResourceStatus(resource)
-                            }
-                        >
-                            {resource.active
-                                ? "Deactivate"
-                                : "Activate"}
-                        </button>
+                                    <button
+                                        className="primary-button"
+                                        onClick={() =>
+                                            startEditing(resource)
+                                        }
+                                    >
+                                        Edit
+                                    </button>
 
-                        <button
-                            onClick={() =>
-                                deleteResource(resource._id)
-                            }
-                        >
-                            Delete
-                        </button>
+                                    <button
+                                        className="secondary-button"
+                                        onClick={() =>
+                                            toggleResourceStatus(
+                                                resource
+                                            )
+                                        }
+                                    >
+                                        {resource.active
+                                            ? "Deactivate"
+                                            : "Activate"}
+                                    </button>
 
-                        <hr />
+                                    <button
+                                        className="danger-button"
+                                        onClick={() =>
+                                            deleteResource(
+                                                resource._id
+                                            )
+                                        }
+                                    >
+                                        Delete
+                                    </button>
+
+                                </div>
+                            </div>
+                        ))}
+
                     </div>
-                ))
-            )}
+                )}
+            </div>
+
         </div>
-    );
+    </div>
+);
 }
 
 export default ResourcesPage;
