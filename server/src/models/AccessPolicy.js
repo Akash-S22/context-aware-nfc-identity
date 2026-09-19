@@ -14,10 +14,17 @@ const accessPolicySchema = new mongoose.Schema(
             trim: true
         },
 
+        accessScope: {
+            type: String,
+            enum: ["OWNER", "ROLE"],
+            required: true,
+            default: "OWNER"
+        },
+
         allowedRoles: {
             type: [String],
             enum: ["USER", "ADMIN"],
-            default: ["USER"]
+            default: []
         },
 
         allowedActions: {

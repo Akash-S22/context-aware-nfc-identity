@@ -4,6 +4,7 @@ const {
     createTag,
     getTags,
     getTagById,
+    getPublicTagInfo,
     updateTagStatus,
     updateEmergencyStatus,
     deleteTag
@@ -12,6 +13,7 @@ const {
 const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
+router.get("/public/:tagId", getPublicTagInfo);
 
 router.use(protect);
 

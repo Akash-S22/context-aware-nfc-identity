@@ -7,7 +7,6 @@ const checkAccess = async ({
     tagId,
     action
 }) => {
-    // Find the NFC tag
     const tag = await Tag.findOne({ tagId });
 
     if (!tag) {
@@ -17,7 +16,6 @@ const checkAccess = async ({
         };
     }
 
-    // Check whether the tag is active
     if (tag.status !== "ACTIVE") {
         return {
             allowed: false,
@@ -25,7 +23,6 @@ const checkAccess = async ({
         };
     }
 
-    // Normal access requires authentication
     if (!user) {
         return {
             allowed: false,
@@ -33,32 +30,58 @@ const checkAccess = async ({
         };
     }
 
-    // Find an active policy matching the user's role and requested action
-    const policy = await AccessPolicy.findOne({
+    // Find active policies for this tag and requested action
+    const policies = await AccessPolicy.find({
         tag: tag._id,
         enabled: true,
-        allowedRoles: user.role,
         allowedActions: action
     });
 
-    if (!policy) {
+    let accessGranted = false;
+    let matchedPolicy = null;
+
+    for (const policy of policies) {
+
+        // Owner-based policy
+        if (
+            policy.accessScope === "OWNER" &&
+            tag.owner &&
+            tag.owner.toString() === user.userId
+        ) {
+            accessGranted = true;
+            matchedPolicy = policy;
+            break;
+        }
+
+        // Role-based policy
+        if (
+            policy.accessScope === "ROLE" &&
+            policy.allowedRoles.includes(user.role)
+        ) {
+            accessGranted = true;
+            matchedPolicy = policy;
+            break;
+        }
+    }
+
+    if (!accessGranted) {
         return {
             allowed: false,
             reason: "ACCESS_DENIED"
         };
     }
 
-    // Get active resources associated with this tag
     const resources = await Resource.find({
         tag: tag._id,
-        active: true
+        active: true,
+            type: { $ne: "EMERGENCY" }
     }).sort({ createdAt: -1 });
 
     return {
         allowed: true,
         reason: "ACCESS_GRANTED",
         tag,
-        policy,
+        policy: matchedPolicy,
         resources
     };
 };

@@ -8,6 +8,7 @@ const createPolicy = async (req, res) => {
         const {
             tagId,
             name,
+            accessScope,
             allowedRoles,
             allowedActions
         } = req.body;
@@ -15,6 +16,15 @@ const createPolicy = async (req, res) => {
         if (!tagId || !name) {
             return res.status(400).json({
                 message: "tagId and name are required"
+            });
+        }
+
+        if (
+            accessScope &&
+            !["OWNER", "ROLE"].includes(accessScope)
+        ) {
+            return res.status(400).json({
+                message: "Invalid access scope"
             });
         }
 
@@ -32,7 +42,8 @@ const createPolicy = async (req, res) => {
         const policy = await AccessPolicy.create({
             tag: tag._id,
             name,
-            allowedRoles: allowedRoles || ["USER"],
+            accessScope: accessScope || "OWNER",
+            allowedRoles: allowedRoles || [],
             allowedActions: allowedActions || ["VIEW"]
         });
 
@@ -79,20 +90,30 @@ const updatePolicy = async (req, res) => {
     try {
         const {
             name,
+            accessScope,
             allowedRoles,
             allowedActions,
             enabled
         } = req.body;
+       const policy = await AccessPolicy.findById(
+    req.params.id
+);
 
-        const policy = await AccessPolicy.findById(
-            req.params.id
-        );
+if (!policy) {
+    return res.status(404).json({
+        message: "Policy not found"
+    });
+}
 
-        if (!policy) {
-            return res.status(404).json({
-                message: "Policy not found"
-            });
-        }
+if (accessScope !== undefined) {
+    if (!["OWNER", "ROLE"].includes(accessScope)) {
+        return res.status(400).json({
+            message: "Invalid access scope"
+        });
+    }
+
+    policy.accessScope = accessScope;
+}
 
         const tag = await Tag.findOne({
             _id: policy.tag,

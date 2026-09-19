@@ -186,10 +186,34 @@ const updateEmergencyStatus = async (req, res) => {
     }
 };
 
+const getPublicTagInfo = async (req, res) => {
+    try {
+        const tag = await Tag.findOne({
+            tagId: req.params.tagId
+        }).select(
+            "tagId type status emergencyEnabled"
+        );
+
+        if (!tag) {
+            return res.status(404).json({
+                message: "Tag not found"
+            });
+        }
+
+        res.status(200).json(tag);
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to fetch tag information",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     createTag,
     getTags,
     getTagById,
+    getPublicTagInfo,
     updateTagStatus,
     updateEmergencyStatus,
     deleteTag
